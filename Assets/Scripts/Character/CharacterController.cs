@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class CharacterController : MonoBehaviour
 {
-    Vector3 targetPosition;
-    Vector3 lookAtTarget;
-    Quaternion playerRot;
-    Animator anim;
-    public float rotSpeed = 5;
-    public float speed = 5;
-    public bool isMoving = false;
+    CharacterManager characterManager;
+   private Vector3 targetPosition;
+   private Vector3 lookAtTarget;
+   private Quaternion playerRot;
+
+    private bool isMoving = false;
+    
     void Start()
     {
-        anim = GetComponent<Animator>();
+        characterManager = GetComponent<CharacterManager>();
     }
 
     // Update is called once per frame
@@ -27,16 +27,21 @@ public class CharacterController : MonoBehaviour
         else
         {
             isMoving = false;
-            anim.SetInteger("movementMode", 0);
+            characterManager.characterAnimation.Wait();
 
         }
         if (isMoving)
         {
-            Move();
+           characterManager.Movement.Move(playerRot, targetPosition);
 
         }
 
 
+    }
+    public bool IsMoving   
+    {
+        get { return isMoving; }   
+        set { isMoving = value; }  
     }
     void SetTargetPosition()
     {
@@ -46,43 +51,21 @@ public class CharacterController : MonoBehaviour
         {
             targetPosition = hit.point;
 
-            if (hit.transform.tag == "mainCharacter" && hit.transform.tag=="obstacle")
+            if (hit.transform.tag == "mainCharacter" || hit.transform.tag=="obstacle")
             {
                 isMoving = false;
-                anim.SetInteger("movementMode", 0);
+                characterManager.characterAnimation.Wait();
 
             }
             else { 
                 lookAtTarget = new Vector3(targetPosition.x - transform.position.x, transform.position.y, targetPosition.z - transform.position.z);
+                Debug.Log(lookAtTarget);
             playerRot = Quaternion.LookRotation(lookAtTarget);
             isMoving = true;
-                anim.SetInteger("movementMode", 1);
+            characterManager.characterAnimation.Walk();
+
             }
         }
     }
-    void Move()
-    {
-        transform.rotation = Quaternion.Slerp(transform.rotation,playerRot,rotSpeed*Time.deltaTime);
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
-
-        if (Vector3.Distance(transform.position, targetPosition) > 5)
-        {
-            speed = 8;
-            rotSpeed = 8;
-            anim.SetInteger("movementMode", 2);
-
-        }
-        else
-        {
-            speed = 5;
-            anim.SetInteger("movementMode", 1);
-        }
-        if (transform.position == targetPosition )
-        {
-            isMoving = false;
-            anim.SetInteger("movementMode", 0);
-
-        }
-        
-    }
+    
 }

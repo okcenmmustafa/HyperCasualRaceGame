@@ -15,4 +15,5 @@ public class CharacterCollider : MonoBehaviour
     {
         
     }
+    
 }

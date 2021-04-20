@@ -20,7 +20,10 @@ public class CharacterController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (!characterManager.isFinishedTheRace)
+        {
+         
+         if (Input.GetMouseButton(0))
         {
             SetTargetPosition();
         }
@@ -37,6 +40,7 @@ public class CharacterController : MonoBehaviour
         }
 
 
+        }
     }
     public bool IsMoving   
     {
@@ -59,7 +63,6 @@ public class CharacterController : MonoBehaviour
             }
             else { 
                 lookAtTarget = new Vector3(targetPosition.x - transform.position.x, transform.position.y, targetPosition.z - transform.position.z);
-                Debug.Log(lookAtTarget);
             playerRot = Quaternion.LookRotation(lookAtTarget);
             isMoving = true;
             characterManager.characterAnimation.Walk();

@@ -7,7 +7,7 @@ public class Movement : MonoBehaviour
      CharacterManager characterManager;
     public float rotSpeed = 5;
     public float speed = 5;
-
+  
     private void Start()
     {
         characterManager = GetComponent<CharacterManager>();
@@ -16,7 +16,7 @@ public class Movement : MonoBehaviour
     public void Move(Quaternion PlayerRot,Vector3 TargetPosition)
     {
 
-        if (transform.position == TargetPosition || Vector3.Distance(transform.position, TargetPosition) < 1)
+        if (transform.position == TargetPosition )
         {
             characterManager.characterController.IsMoving = false;
             characterManager.characterAnimation.Wait();

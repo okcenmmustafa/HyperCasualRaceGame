@@ -8,10 +8,12 @@ using Random = System.Random;
 
 public class AIController : MonoBehaviour
 {
-    int targetLevel, targetIndexRandom;
-     NavMeshAgent AgentOpponent;
+    public int targetLevel;
+    int targetIndexRandom;
+     NavMeshAgent agentOpponent;
     static Random rastgele= new Random();
     public TargetPointManager targetPointManager;
+    
     void Start()
     {
          targetIndexRandom = rastgele.Next(targetPointManager.instantiateSize - 1);
@@ -22,42 +24,24 @@ public class AIController : MonoBehaviour
 
     void Update()
     {
-
-        if (Vector3.Distance(transform.position,targetPointManager.pointCategorize[targetLevel, targetIndexRandom].transform.position)<3)
+        if (Vector3.Distance(transform.position, targetPointManager.pointCategorize[targetLevel, targetIndexRandom].transform.position) < 10 && targetLevel < targetPointManager.TargetPoints.Count - 1)
         {
             targetLevel++;
             nextPoint(targetLevel);
-            Debug.Log("Girdi" + targetIndexRandom);
         }
     }
 
     void nextPoint(int targetLevel)
     {
-        if (targetLevel == 0)
-        {
+      
             targetIndexRandom = rastgele.Next(targetPointManager.instantiateSize - 1);
-            AgentOpponent.SetDestination(targetPointManager.pointCategorize[0, targetIndexRandom].transform.position);
-        }
-        if (targetLevel == 1)
-        {
-            targetIndexRandom = rastgele.Next(targetPointManager.instantiateSize - 1);
-            AgentOpponent.SetDestination(targetPointManager.pointCategorize[1, targetIndexRandom].transform.position);
-        }
-        if (targetLevel == 2)
-        {
-            targetIndexRandom = rastgele.Next(targetPointManager.instantiateSize - 1);
-            AgentOpponent.SetDestination(targetPointManager.pointCategorize[2, targetIndexRandom].transform.position);
-        }
-        if (targetLevel == 3)
-        {
-            targetIndexRandom = rastgele.Next(targetPointManager.instantiateSize - 1);
-            AgentOpponent.SetDestination(targetPointManager.pointCategorize[3, targetIndexRandom].transform.position);
-        }
-        if (targetLevel == 4)
-        {
-            targetIndexRandom = rastgele.Next(targetPointManager.instantiateSize - 1);
-            AgentOpponent.SetDestination(targetPointManager.pointCategorize[4, targetIndexRandom].transform.position);
-        }
+            agentOpponent.SetDestination(targetPointManager.pointCategorize[targetLevel, targetIndexRandom].transform.position);
+     
+    }
+    public NavMeshAgent AgentOpponent
+    {
+        get { return agentOpponent; }
+        set { agentOpponent = value; }
     }
 }
 

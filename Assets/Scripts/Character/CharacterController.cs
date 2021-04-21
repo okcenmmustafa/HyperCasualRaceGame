@@ -17,10 +17,10 @@ public class CharacterController : MonoBehaviour
         characterManager = GetComponent<CharacterManager>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if (!characterManager.isFinishedTheRace)
+        // Play butona basılmamışsa veya karakter bitiş noktasında değilse swerve mechanics çalışır 
+        if (!characterManager.isFinishedTheRace && characterManager.isPressedPlay)
         {
          
          if (Input.GetMouseButton(0))
@@ -31,9 +31,10 @@ public class CharacterController : MonoBehaviour
         {
             isMoving = false;
             characterManager.characterAnimation.Wait();
+                characterManager.RunnigSound.Play();
 
-        }
-        if (isMoving)
+            }
+            if (isMoving)
         {
            characterManager.Movement.Move(playerRot, targetPosition);
 
@@ -51,21 +52,26 @@ public class CharacterController : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
+        //Unity Physics kullanılarak karakterin tıklanılan bölgeye yönlenmesi sağlanmıştır.
+
         if(Physics.Raycast(ray,out hit,1000))
         {
             targetPosition = hit.point;
 
-            if (hit.transform.tag == "mainCharacter" || hit.transform.tag=="obstacle")
+            //Main Character kendisine tıklayınca oluşan bir bug çözümü
+            if (hit.transform.tag.Equals("mainCharacter") )
             {
                 isMoving = false;
                 characterManager.characterAnimation.Wait();
 
             }
             else { 
+                // Main Character hareketi 
                 lookAtTarget = new Vector3(targetPosition.x - transform.position.x, transform.position.y, targetPosition.z - transform.position.z);
             playerRot = Quaternion.LookRotation(lookAtTarget);
             isMoving = true;
             characterManager.characterAnimation.Walk();
+
 
             }
         }

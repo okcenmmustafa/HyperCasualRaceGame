@@ -13,15 +13,18 @@ public class Movement : MonoBehaviour
         characterManager = GetComponent<CharacterManager>();
 
     }
+
+    // Swerve mechanics ile tasarlanan main Character hareket sistemi
     public void Move(Quaternion PlayerRot,Vector3 TargetPosition)
     {
-
+        //tıklanan hedefe ulaşırsa dur
         if (transform.position == TargetPosition )
         {
             characterManager.characterController.IsMoving = false;
             characterManager.characterAnimation.Wait();
 
         }
+        //tıklanan hedeften 5 birimden fazla uzaktaysa koşma animasyonu ve hız değişikliği
         else if (Vector3.Distance(transform.position, TargetPosition) > 5)
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, PlayerRot, rotSpeed * Time.deltaTime);
@@ -31,6 +34,8 @@ public class Movement : MonoBehaviour
             characterManager.characterAnimation.Run();
 
         }
+        //tıklanan hedeften 5 birimden az uzaklıktaysa yürüme animasyonu ve hız değişikliği
+
         else
         {
             transform.rotation = Quaternion.Slerp(transform.rotation, PlayerRot, rotSpeed * Time.deltaTime);

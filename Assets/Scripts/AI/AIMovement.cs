@@ -16,6 +16,7 @@ public class AIMovement : MonoBehaviour
     }
     private void Update()
     {
+        //AI animasyonları
         if (navMeshAgent.velocity.x==0 && navMeshAgent.velocity.z==0)
         {
             characterManager.characterAnimation.Wait();

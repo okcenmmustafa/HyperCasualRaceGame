@@ -21,6 +21,7 @@ public class PlayerInfo : MonoBehaviour
     {
 
     }
+    // Main Character ve AI Rakiplerin yarışmayı yarış bitirmesi 
     public void isFinish()
     {
         finished = true;

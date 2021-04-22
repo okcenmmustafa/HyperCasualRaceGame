@@ -1,80 +1,47 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterController : MonoBehaviour
 {
-    CharacterManager characterManager;
-   private Vector3 targetPosition;
-   private Vector3 lookAtTarget;
-   private Quaternion playerRot;
-
-    private bool isMoving = false;
-    
-    void Start()
+    public Swerve swipeControls;
+    private Vector3 desiredPosition=Vector3.zero;
+    private Vector3 lookAtTarget;
+    private Quaternion playerRot;
+    private CharacterManager characterManager;
+    private void Start()
     {
         characterManager = GetComponent<CharacterManager>();
     }
-
     void Update()
     {
-        // Play butona basılmamışsa veya karakter bitiş noktasında değilse swerve mechanics çalışır 
         if (!characterManager.isFinishedTheRace && characterManager.isPressedPlay)
         {
-         
-         if (Input.GetMouseButton(0))
-        {
-            SetTargetPosition();
-        }
-        else
-        {
-            isMoving = false;
-            characterManager.characterAnimation.Wait();
-                characterManager.RunnigSound.Play();
-
-            }
-            if (isMoving)
-        {
-           characterManager.Movement.Move(playerRot, targetPosition);
-
-        }
-
-
-        }
-    }
-    public bool IsMoving   
-    {
-        get { return isMoving; }   
-        set { isMoving = value; }  
-    }
-    void SetTargetPosition()
-    {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        //Unity Physics kullanılarak karakterin tıklanılan bölgeye yönlenmesi sağlanmıştır.
-
-        if(Physics.Raycast(ray,out hit,1000))
-        {
-            targetPosition = hit.point;
-
-            //Main Character kendisine tıklayınca oluşan bir bug çözümü
-            if (hit.transform.tag.Equals("mainCharacter") )
+            if (Mathf.Abs(swipeControls.SwipeDelta.x) > 0 || Mathf.Abs(swipeControls.SwipeDelta.y) > 0)
             {
-                isMoving = false;
+                if (Mathf.Abs(swipeControls.SwipeDelta.x) < 1 || Mathf.Abs(swipeControls.SwipeDelta.y) < 1)
+                    characterManager.characterAnimation.Walk();
+                else
+                    characterManager.characterAnimation.Run();
+            }
+            else
+            {
                 characterManager.characterAnimation.Wait();
 
             }
-            else { 
-                // Main Character hareketi 
-                lookAtTarget = new Vector3(targetPosition.x - transform.position.x, transform.position.y, targetPosition.z - transform.position.z);
+
+            desiredPosition = transform.position;
+            Debug.Log(desiredPosition);
+            desiredPosition.z = desiredPosition.z + swipeControls.SwipeDelta.y;
+            desiredPosition.y = +0;
+            desiredPosition.x = desiredPosition.x + swipeControls.SwipeDelta.x;
+            transform.position = Vector3.MoveTowards(transform.position, desiredPosition, 8f * Time.deltaTime);
+            lookAtTarget = new Vector3(swipeControls.SwipeDelta.x, 0, swipeControls.SwipeDelta.y);
             playerRot = Quaternion.LookRotation(lookAtTarget);
-            isMoving = true;
-            characterManager.characterAnimation.Walk();
+            transform.rotation = Quaternion.Slerp(transform.rotation, playerRot, 50f * Time.deltaTime);
 
-
-            }
         }
     }
-    
+    public bool IsMoving { get { return swipeControls.IsDragging; } }
+
 }

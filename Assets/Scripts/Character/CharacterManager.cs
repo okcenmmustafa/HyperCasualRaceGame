@@ -9,7 +9,6 @@ public class CharacterManager : MonoBehaviour
     public ParticleSystem DeadPartical;
     public CharacterController characterController;
     public AIMovement aIMovement;
-    public Movement Movement;
     public CharacterAnimation characterAnimation;
     public CharacterCollider characterCollider;
     public AIController aIController;
@@ -24,7 +23,6 @@ public class CharacterManager : MonoBehaviour
     void Awake()
     {
         playerInfo = new PlayerInfo(gameObject.name, 0);
-        Movement = GetComponent<Movement>();
         aIMovement = GetComponent<AIMovement>();
         characterAnimation = GetComponent<CharacterAnimation>();
         characterController = GetComponent<CharacterController>();
